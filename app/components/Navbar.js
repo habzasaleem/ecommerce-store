@@ -10,6 +10,7 @@ export default function Navbar() {
         <Link href="/products">Shop</Link>
         <Link href="/about">About</Link>
         <Link href="/cart">Cart</Link>
+        <Link href="/assistant">AI Assistant</Link>
       </div>
     </nav>
   );
