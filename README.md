@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## AI Tool: `findProducts`
 
-## Getting Started
+**File:** `lib/tools/find-products.js`
 
-First, run the development server:
+### What it does
+Lets the AI search the store's product catalog on the user's behalf, instead
+of guessing or hallucinating what's in stock. The AI decides *when* to call
+it based on the tool's `description` field, and extracts the input
+parameters from the user's natural-language message.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Input schema
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `query` | `string` | Yes | Free-text description of what the user wants (e.g. `"cozy blanket"`, `"cheap headphones"`). |
+| `maxPrice` | `number` | No | Maximum price in USD, if the user mentioned a budget. |
+| `category` | `string` | No | Category inferred from the user's words. Not restricted to a fixed list — the AI can pass anything it infers (e.g. `"toys"`), which lets the tool's error path be reachable through normal conversation. |
+
+Schema is defined with [Zod](https://zod.dev) via `inputSchema` and validated
+automatically by the AI SDK before `execute` ever runs.
+
+### Return shape (success)
+```ts
+{
+  count: number;      // total matches found
+  products: Product[]; // up to 6 matches, each shaped as:
+  // { id, name, price, originalPrice?, image, category, tags[], description }
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Error behavior
+If the AI passes a `category` that isn't one this store actually carries
+(`home`, `electronics`, `kitchen`, `apparel`), `execute` throws an `Error`
+with a message listing the valid categories. This is a **reachable** failure
+path — not a fake/simulated one — triggered by asking for something like
+*"show me toys"* or *"find garden supplies."*
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### UI states
+The tool's 4 lifecycle states are rendered by
+`components/ToolFindProductsDisplay.jsx`, each with distinct styling:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| State | Visual | Meaning |
+|---|---|---|
+| `input-streaming` | Gray box, bouncing dots | AI is still deciding what to search for |
+| `input-available` | Indigo box, spinner | Search is running, shows the exact query/filters used |
+| `output-available` | Product grid (`ProductGrid` component) | Real results rendered as cards, not JSON |
+| `output-error` | Red box, warning icon | Search failed — shows the thrown error message |
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Example usage (from the assistant chat)
+> "Find me something cozy under $30" → calls `findProducts({ query: "cozy", maxPrice: 30 })`
+> "Show me toys" → calls `findProducts({ query: "toys", category: "toys" })` → throws → error card renders
