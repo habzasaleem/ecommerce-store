@@ -65,14 +65,31 @@ function StateRunning({ input }) {
 
 // "What came back?" — real component, not a JSON dump
 function StateResult({ input, output }) {
+  const count = output?.count ?? 0;
+
+  // No matches is a distinct state from "results found" — worth its
+  // own designed message instead of an empty grid.
+  if (count === 0) {
+    return (
+      <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-3 text-sm">
+        <p className="text-neutral-600">
+          No products matched
+          {input?.query ? ` "${input.query}"` : " that search"}
+          {typeof input?.maxPrice === "number" ? ` under $${input.maxPrice}` : ""}.
+        </p>
+        <p className="mt-1 text-xs text-neutral-400">
+          Try a higher price limit, a different category, or a broader search term.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="mb-2 text-xs text-neutral-500">
         Found{" "}
-        <span className="font-medium text-neutral-700">
-          {output?.count ?? 0}
-        </span>{" "}
-        result{output?.count === 1 ? "" : "s"}
+        <span className="font-medium text-neutral-700">{count}</span> result
+        {count === 1 ? "" : "s"}
         {input?.query ? ` for "${input.query}"` : ""}
       </div>
       <ProductGrid products={output?.products ?? []} />
