@@ -4,11 +4,12 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: './vitest.setup.jsx',
-    css: true,
-  },
+  environment: 'jsdom',
+  globals: true,
+  setupFiles: './vitest.setup.jsx',
+  css: true,
+  exclude: ['**/node_modules/**', '**/tests/**'],
+},
   resolve: {
     alias: {
       '@': import.meta.dirname,
