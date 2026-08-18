@@ -32,7 +32,7 @@ export default function AssistantPage() {
   return (
     <div className="mx-auto flex h-screen max-w-2xl flex-col p-4">
       <h1 className="mb-4 text-lg font-semibold text-neutral-900">
-        Shopping Assistant
+        Shopping Assistant 
       </h1>
 
       <div className="flex-1 overflow-y-auto space-y-4 pb-4">
