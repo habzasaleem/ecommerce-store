@@ -30,7 +30,9 @@ useEffect(() => {
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    setCanRender3D(true);
+    if (!prefersReducedMotion) {
+        setCanRender3D(true);
+    }
   }, []);
 
   if (!canRender3D) {
