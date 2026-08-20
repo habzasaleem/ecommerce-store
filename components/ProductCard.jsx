@@ -7,10 +7,11 @@ export function ProductCard({ product }) {
   return (
     <div className="group rounded-xl border border-neutral-200 bg-white overflow-hidden hover:shadow-md transition-shadow duration-200">
       <div className="relative aspect-square bg-neutral-100">
-        <Image
+                <Image
           src={product.image}
           alt={product.name}
           fill
+          sizes="(max-width: 640px) 50vw, 33vw"
           className="object-cover"
           unoptimized
         />
