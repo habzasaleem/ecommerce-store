@@ -9,10 +9,6 @@ import { ProductGridSkeleton } from "@/components/ProductGridSkeleton";
 export default function AssistantPage() {
   const [input, setInput] = useState("");
 
-  // `error` -> non-null whenever the last request failed (network drop,
-  //   API error, thrown tool error, etc.)
-  // `stop`  -> lets the user cancel a request that's stuck submitted/streaming
-  // `regenerate` -> re-runs the last exchange, i.e. your retry button
   const { messages, sendMessage, status, error, stop, regenerate } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
@@ -24,21 +20,22 @@ export default function AssistantPage() {
     setInput("");
   };
 
-  // Input/send should only lock while a request is genuinely in flight.
-  // It should NOT stay locked forever just because something errored —
-  // that was the bug you hit.
   const isBusy = status === "submitted" || status === "streaming";
 
   return (
-    <div className="mx-auto flex h-screen max-w-2xl flex-col p-4">
+    <main className="mx-auto flex h-screen max-w-2xl flex-col p-4">
       <h1 className="mb-4 text-lg font-semibold text-neutral-900">
-        Shopping Assistant 
+        Shopping Assistant
       </h1>
 
-      <div className="flex-1 overflow-y-auto space-y-4 pb-4">
+      <div
+        className="flex-1 overflow-y-auto space-y-4 pb-4"
+        aria-live="polite"
+        aria-atomic="false"
+      >
         {messages.length === 0 && (
           <div className="space-y-2">
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-neutral-600">
               Try asking the assistant something like:
             </p>
             <div className="flex flex-wrap gap-2">
@@ -64,7 +61,7 @@ export default function AssistantPage() {
 
         {messages.map((message) => (
           <div key={message.id}>
-            <div className="mb-1 text-xs font-medium text-neutral-400">
+            <div className="mb-1 text-xs font-medium text-neutral-600">
               {message.role === "user" ? "You" : "Assistant"}
             </div>
 
@@ -86,28 +83,24 @@ export default function AssistantPage() {
           </div>
         ))}
 
-        {/* Skeleton shown while waiting for the assistant's first
-            response — matches the real product card shape so content
-            doesn't jump around when it arrives. */}
         {status === "submitted" && <ProductGridSkeleton count={2} />}
 
-        {/* Stuck-stream escape hatch: if it's taking too long or the
-            connection died mid-stream, let the user cancel instead of
-            being locked out until they refresh the page. */}
         {isBusy && (
           <button
             type="button"
             onClick={() => stop()}
-            className="text-xs font-medium text-neutral-400 underline hover:text-neutral-600"
+            aria-label="Stop the assistant's response"
+            className="text-xs font-medium text-neutral-600 underline hover:text-neutral-800"
           >
             Taking too long? Cancel
           </button>
         )}
 
-        {/* Designed error state with a working retry — this is the
-            piece that was completely missing before. */}
         {error && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2">
+          <div
+            role="alert"
+            className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2"
+          >
             <p className="text-sm text-red-700">
               Something went wrong sending that message. Check your
               connection and try again.
@@ -124,7 +117,11 @@ export default function AssistantPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex gap-2 border-t pt-3">
+        <label htmlFor="chat-input" className="sr-only">
+          Ask the shopping assistant a question
+        </label>
         <input
+          id="chat-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask for a product…"
@@ -139,6 +136,6 @@ export default function AssistantPage() {
           Send
         </button>
       </form>
-    </div>
+    </main>
   );
 }
