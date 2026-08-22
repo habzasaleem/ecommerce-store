@@ -59,13 +59,11 @@ export async function POST(req) {
 
   // --- Rate limit check ---
   if (isRateLimited(ip)) {
-    return new Response(
-      JSON.stringify({
-        error: "Too many requests. Please try again in a bit.",
-      }),
-      { status: 429, headers: { "Content-Type": "application/json" } }
-    );
-  }
+  return new Response("Too many requests. Please try again in a bit.", {
+    status: 429,
+    headers: { "Content-Type": "text/plain" },
+  });
+}
 
   const { messages } = await req.json();
 
@@ -77,13 +75,12 @@ export async function POST(req) {
       .join("") ?? "";
 
   if (lastMessageText.length > MAX_MESSAGE_LENGTH) {
-    return new Response(
-      JSON.stringify({
-        error: `Message too long. Please keep it under ${MAX_MESSAGE_LENGTH} characters.`,
-      }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
-    );
-  }
+  return new Response(
+    `Message too long. Please keep it under ${MAX_MESSAGE_LENGTH} characters.`,
+    { status: 400, headers: { "Content-Type": "text/plain" } }
+  );
+}
+
 
   const result = streamText({
     model: google("gemini-2.5-flash"),
