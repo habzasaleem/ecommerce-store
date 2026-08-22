@@ -97,23 +97,22 @@ export default function AssistantPage() {
         )}
 
         {error && (
-          <div
-            role="alert"
-            className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2"
-          >
-            <p className="text-sm text-red-700">
-              Something went wrong sending that message. Check your
-              connection and try again.
-            </p>
-            <button
-              type="button"
-              onClick={() => regenerate()}
-              className="shrink-0 rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700"
-            >
-              Retry
-            </button>
-          </div>
-        )}
+  <div
+    role="alert"
+    className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2"
+  >
+    <p className="text-sm text-red-700">
+      {error.message || "Something went wrong sending that message. Please try again."}
+    </p>
+    <button
+      type="button"
+      onClick={() => regenerate()}
+      className="shrink-0 rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700"
+    >
+      Retry
+    </button>
+  </div>
+)}
       </div>
 
       <form onSubmit={handleSubmit} className="flex gap-2 border-t pt-3">
