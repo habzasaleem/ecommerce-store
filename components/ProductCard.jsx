@@ -1,11 +1,15 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export function ProductCard({ product, priority = false }) {
   const hasDiscount =
     product.originalPrice && product.originalPrice > product.price;
 
   return (
-    <div className="group rounded-xl border border-neutral-200 bg-white overflow-hidden hover:shadow-md transition-shadow duration-200">
+    <Link
+      href={`/products/${product.id}`}
+      className="group block rounded-xl border border-neutral-200 bg-white overflow-hidden hover:shadow-md transition-shadow duration-200"
+    >
       <div className="relative aspect-square bg-neutral-100">
         <Image
           src={product.image}
@@ -41,7 +45,7 @@ export function ProductCard({ product, priority = false }) {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
