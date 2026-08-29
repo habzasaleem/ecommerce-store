@@ -17,7 +17,6 @@ export function ProductCard({ product, priority = false }) {
           fill
           sizes="(max-width: 640px) 50vw, 33vw"
           className="object-cover"
-          unoptimized
           priority={priority}
         />
         {hasDiscount && (

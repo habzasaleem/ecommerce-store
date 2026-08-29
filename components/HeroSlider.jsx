@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const SLIDES = [
@@ -30,9 +31,6 @@ export default function HeroSlider() {
 
   return (
     <section className="relative overflow-hidden bg-[#EAF0F7]">
-      {/* Matches the exact 2.4:1 ratio the hero photos were cropped to —
-          keep this in sync if you ever crop new hero photos to a
-          different ratio. */}
       <div className="relative w-full aspect-[12/5]">
         {SLIDES.map((s, i) => (
           <div
@@ -43,10 +41,13 @@ export default function HeroSlider() {
             }`}
           >
             {s.src ? (
-              <img
+              <Image
                 src={s.src}
                 alt={s.alt}
-                className="w-full h-full object-cover object-center"
+                fill
+                sizes="100vw"
+                priority={i === 0}
+                className="object-cover object-center"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#DCE6F2] to-[#C9D8EB] text-[#5C6E8C] text-sm text-center px-6">
@@ -56,7 +57,6 @@ export default function HeroSlider() {
           </div>
         ))}
 
-        {/* Fixed text overlay */}
         <div className="absolute inset-0 z-10 flex items-center px-6 sm:pl-10 lg:pl-20 xl:pl-28">
           <div className="max-w-lg">
             <h1 className="font-serif text-4xl md:text-5xl leading-tight text-[#1C2B4A] mb-4">
@@ -76,7 +76,6 @@ export default function HeroSlider() {
           </div>
         </div>
 
-        {/* Arrow controls */}
         <button
           onClick={prev}
           aria-label="Previous slide"
@@ -92,7 +91,6 @@ export default function HeroSlider() {
           <ChevronRight size={20} />
         </button>
 
-        {/* Dot indicators */}
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2">
           {SLIDES.map((s, i) => (
             <button
