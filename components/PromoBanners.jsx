@@ -1,7 +1,9 @@
+import Image from "next/image";
+
 const BANNERS = [
-  { title: "Summer Collection", cta: "Explore Now", href: "/products/women", image: "screenshots/7.png" },
-  { title: "Gifts That Matter", cta: "Shop Gifts", href: "/products/gifts", image:  "screenshots/8.png" },
-  { title: "Luxury Watches", cta: "Shop Now", href: "/products/watches", image: "screenshots/9.png" },
+  { title: "Summer Collection", cta: "Explore Now", href: "/products/women", image: "/screenshots/7.png" },
+  { title: "Gifts That Matter", cta: "Shop Gifts", href: "/products/gifts", image: "/screenshots/8.png" },
+  { title: "Luxury Watches", cta: "Shop Now", href: "/products/watches", image: "/screenshots/9.png" },
 ];
 
 export default function PromoBanners() {
@@ -14,10 +16,12 @@ export default function PromoBanners() {
           className="group relative overflow-hidden rounded-xl h-56 bg-[#EAF0F7] flex items-end"
         >
           {banner.image ? (
-            <img
+            <Image
               src={banner.image}
               alt={banner.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-[#8492AD] text-xs">

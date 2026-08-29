@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const CATEGORIES = [
   { name: "Women Clothing", slug: "women", image: "/screenshots/women.png" },
   { name: "Men Clothing", slug: "men", image: "/screenshots/man.png" },
@@ -18,9 +20,15 @@ export default function CategoryGrid() {
             href={`/products/${cat.slug}`}
             className="group flex flex-col items-center gap-3 text-center"
           >
-            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-[#EAF0F7] flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg">
+            <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-[#EAF0F7] flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg">
               {cat.image ? (
-                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                <Image
+                  src={cat.image}
+                  alt={cat.name}
+                  fill
+                  sizes="96px"
+                  className="object-cover"
+                />
               ) : (
                 <span className="text-[10px] text-[#8492AD] px-2">image</span>
               )}
